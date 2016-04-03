@@ -1,0 +1,11 @@
+function __map_function(input)
+{
+     return {"count":1};
+}
+
+def __reduce_function(final_result, taskoutput):
+    if "count" in final_result:
+        final_result["count"] += taskoutput["count"]
+    else:
+        final_result["count"] = taskoutput["count"]
+    return final_result
