@@ -1,5 +1,8 @@
 # browser-based-map-reduce
 
+###Framework
+![](Doc/image.png)
+
 ###Example
 
 ####WordCount
@@ -22,12 +25,11 @@ function __map_function(input)
 }
 ~~~~
 ~~~~{.python}
-def __reduce_function(final_result, taskoutput):
-    for i in taskoutput:
+def __reduce_function(final_result, task_output):
+    for i in task_output:
         if i in final_result:
-            final_result[i] += taskoutput[i]
+            final_result[i] += task_output[i]
         else:
-            final_result[i] = taskoutput[i]
+            final_result[i] = task_output[i]
     return final_result
 ~~~~
-
