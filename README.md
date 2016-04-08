@@ -10,8 +10,8 @@
 ~~~~{.javascript}
 function __map_function(input)
 {
-  var split = input.split(" "),
-    obj = {};
+  var split = input.split(" ");
+  obj = {};
 
   for (var x=0; x<split.length; x++){
     if(obj[split[x]]===undefined){
