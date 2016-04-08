@@ -1,7 +1,7 @@
 # browser-based-map-reduce
 
 ###Framework
-![](Doc/image.png)
+![](docs/image.png)
 
 ###Example
 
