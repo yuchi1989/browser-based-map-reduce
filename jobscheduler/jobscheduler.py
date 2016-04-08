@@ -56,7 +56,7 @@ class JobServer(threading.Thread, JsonSocket):
 					jobqueue[int(msg["jobid"])]["job"]["tq2"] = tq2
 					jobqueue[int(msg["jobid"])]["job"]["tq3"] = tq3
 					jobqueue[int(msg["jobid"])]["job"]["files"] = files
-					jobqueue[int(msg["jobid"])]["job"]["final_result"] = {}
+					jobqueue[int(msg["jobid"])]["job"]["finalresult"] = {}
 					jobqueue[int(msg["jobid"])]["job"]["fileoption"] = file_option
 					self.lock.release()
 					print(jobqueue[int(msg["jobid"])]["job"]["state"])
@@ -117,7 +117,7 @@ class JobServer(threading.Thread, JsonSocket):
 					jobqueue[int(msg["jobid"])]["job"]["tq3"] = tq3
 					reduce = jobqueue[int(msg["jobid"])]["job"]["reducecode"]
 					final_result = jobqueue[int(msg["jobid"])]["job"]["finalresult"]
-					print ("")
+					print (" ")
 					print (reduce)
 					print (taskid)
 					print (tq1)
