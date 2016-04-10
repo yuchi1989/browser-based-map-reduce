@@ -45,7 +45,11 @@ def addtask(request):
     number_of_nodes = request.POST.get("nodes", "") 
     param = {}
     param["action"] = 0
-    param["jobid"] = int(jobid)
+    param["jobid"] = int(jobid)    
+    mapcode = mapcode.replace(u';\xa0', ';\n')
+    mapcode = mapcode.replace(u'\xa0', ' ')
+    mapcode = mapcode.replace(u'{ ', '{\n')
+    mapcode = mapcode.replace(u'} ', '}\n')
     param["mapcode"] = mapcode
     reducecode = reducecode.replace(u'\xa0', ' ')
     reducecode = reducecode.replace('__reduce_function', '_JobServer__reduce_function ')

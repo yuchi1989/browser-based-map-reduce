@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 $(document).ready(function(){
 
-
+var globaldata;
 function postback(result,task_id){
      var aj = $.ajax( {  
     url:'mapreduce/postreturn',
@@ -47,6 +47,15 @@ function postback(result,task_id){
      
 });
   }
+  
+  function asyncreturn (result)
+  {    
+      if (jQuery.isEmptyObject(result)) {$("#result").html("Synchronizing");return;}
+      result = JSON.stringify(result)
+      $("#result").html(result);
+      postback(result,globaldata.taskid)
+      gettask()
+  }
 
 	function run(data){
   text = data.code.replace(new RegExp("<","g"),"&lt;").replace(new RegExp(">","g"),"&gt;")
@@ -58,6 +67,7 @@ function postback(result,task_id){
   //alert(data.code)
 	eval(data.code);
   result = __map_function(data.input);
+  if (jQuery.isEmptyObject(result)) {$("#result").html("Synchronizing");return;}
   result = JSON.stringify(result)
   $("#result").html(result);
   postback(result,data.taskid)
@@ -76,15 +86,10 @@ function postback(result,task_id){
     cache:false,  
     dataType:'json',  
     success:function(data) {  
-        if(data.msg =="true" ){  
             
-            console.log(data) 
-            run(data)
-        }else{  
-            //view(data.msg);
-            console.log(data)
-            run(data)
-        }  
+            console.log(data);
+            globaldata = data;
+            run(data);
      },  
      error : function() {  
             
