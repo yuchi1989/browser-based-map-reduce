@@ -47,7 +47,7 @@ function postback(result,task_id){
      
 });
   }
-  
+
   function asyncreturn (result)
   {    
       if (jQuery.isEmptyObject(result)) {$("#result").html("Synchronizing");return;}
@@ -109,6 +109,7 @@ gettask()
 <div id="a1"><h3>Result</h3></div>
 
 <div id="result"></div>
+<div id="console"></div>
 <!-- <button id="b01" type="button">test ajax</button> -->
 <!-- <p>this is a template</p> -->
 </body>

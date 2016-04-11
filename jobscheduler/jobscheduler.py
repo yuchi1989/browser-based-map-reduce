@@ -47,6 +47,7 @@ class JobServer(threading.Thread, JsonSocket):
 					tq1 = list(range(len(files)))
 					tq2 = []
 					tq3 = []
+					print (msg["mapcode"])
 					self.lock.acquire()
 					jobqueue[int(msg["jobid"])]["job"]["id"] = int(msg["jobid"])
 					jobqueue[int(msg["jobid"])]["job"]["mapcode"] = msg["mapcode"]
@@ -58,6 +59,7 @@ class JobServer(threading.Thread, JsonSocket):
 					jobqueue[int(msg["jobid"])]["job"]["files"] = files
 					jobqueue[int(msg["jobid"])]["job"]["finalresult"] = {}
 					jobqueue[int(msg["jobid"])]["job"]["fileoption"] = file_option
+					jobqueue[int(msg["jobid"])]["job"]["starttime"] = 0
 					self.lock.release()
 					print(jobqueue[int(msg["jobid"])]["job"]["state"])
 					self.sendObj({"result":0})
@@ -71,7 +73,11 @@ class JobServer(threading.Thread, JsonSocket):
 					job = jobqueue[int(msg["jobid"])]
 					files = jobqueue[int(msg["jobid"])]["job"]["files"]
 					file_option = jobqueue[int(msg["jobid"])]["job"]["fileoption"]
+					start_time = jobqueue[int(msg["jobid"])]["job"]["starttime"]
 					if len(tq1)!=0 and job["job"]["state"]=="active":
+						if start_time == 0:
+							start_time = time.time()
+							jobqueue[int(msg["jobid"])]["job"]["starttime"] = start_time
 						index = tq1.pop()
 						tq2.append(index)
 						inputdata = ""
@@ -108,25 +114,34 @@ class JobServer(threading.Thread, JsonSocket):
 					tq1 = jobqueue[int(msg["jobid"])]["job"]["tq1"]
 					tq2 = jobqueue[int(msg["jobid"])]["job"]["tq2"]
 					tq3 = jobqueue[int(msg["jobid"])]["job"]["tq3"]
+					
+					if len(tq2)==0 and len(tq1)==0:
+						jobqueue[int(msg["jobid"])]["job"]["state"] = "unactive"
+						self.sendObj({"result":-1})
+						self.lock.release()
+						return
 					if taskid in tq2:
 						tq2.remove(taskid)
 						tq3.append(taskid)
-					if len(tq2)==0 and len(tq1)==0:
-						jobqueue[int(msg["jobid"])]["job"]["state"] = "unactive"
-					jobqueue[int(msg["jobid"])]["job"]["tq2"] = tq2
-					jobqueue[int(msg["jobid"])]["job"]["tq3"] = tq3
-					reduce = jobqueue[int(msg["jobid"])]["job"]["reducecode"]
-					final_result = jobqueue[int(msg["jobid"])]["job"]["finalresult"]
-					print (" ")
-					print (reduce)
-					print (taskid)
-					print (tq1)
-					print (tq2)
-					print (tq3)
-					exec(reduce,globals())
-					final_result = __reduce_function(final_result, taskoutput)
-					print (final_result)
-					jobqueue[int(msg["jobid"])]["job"]["finalresult"] = final_result
+						jobqueue[int(msg["jobid"])]["job"]["tq2"] = tq2
+						jobqueue[int(msg["jobid"])]["job"]["tq3"] = tq3
+						reduce = jobqueue[int(msg["jobid"])]["job"]["reducecode"]
+						final_result = jobqueue[int(msg["jobid"])]["job"]["finalresult"]
+						print (" ")
+						print (reduce)
+						print (taskid)
+						print (tq1)
+						print (tq2)
+						print (tq3)
+						exec(reduce,globals())
+						final_result = __reduce_function(final_result, taskoutput)
+						print (final_result)
+						jobqueue[int(msg["jobid"])]["job"]["finalresult"] = final_result
+						if len(tq2)==0:
+							print ("The job has been finished.")
+							print (final_result)
+							start_time = jobqueue[int(msg["jobid"])]["job"]["starttime"]
+							print ("--- %s seconds ---" % (time.time() - start_time))
 					self.lock.release()
 					
                                         

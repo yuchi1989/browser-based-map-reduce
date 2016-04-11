@@ -21,3 +21,6 @@ def __reduce_function(final_result, taskoutput):
         else:
             final_result[i] = taskoutput[i]
     return final_result
+
+Input folder:
+inputfolder0/
