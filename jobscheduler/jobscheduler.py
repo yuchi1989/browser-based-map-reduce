@@ -114,7 +114,7 @@ class JobServer(threading.Thread, JsonSocket):
 					tq1 = jobqueue[int(msg["jobid"])]["job"]["tq1"]
 					tq2 = jobqueue[int(msg["jobid"])]["job"]["tq2"]
 					tq3 = jobqueue[int(msg["jobid"])]["job"]["tq3"]
-					
+					files = jobqueue[int(msg["jobid"])]["job"]["files"]
 					if len(tq2)==0 and len(tq1)==0:
 						jobqueue[int(msg["jobid"])]["job"]["state"] = "unactive"
 						self.sendObj({"result":-1})
@@ -137,7 +137,7 @@ class JobServer(threading.Thread, JsonSocket):
 						final_result = __reduce_function(final_result, taskoutput)
 						print (final_result)
 						jobqueue[int(msg["jobid"])]["job"]["finalresult"] = final_result
-						if len(tq2)==0:
+						if len(tq3)==len(files):
 							print ("The job has been finished.")
 							print (final_result)
 							start_time = jobqueue[int(msg["jobid"])]["job"]["starttime"]
