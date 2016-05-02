@@ -13,9 +13,9 @@ function __map_function(input)
   var split = input.split(" ");
   obj = {};
 
-  for (var x=0; x<split.length; x++){
-    if(obj[split[x]]===undefined){
-       obj[split[x]]=1;
+  for (var x = 0; x < split.length; x++){
+    if(obj[split[x]] === undefined){
+       obj[split[x]] = 1;
     }
     else{
        obj[split[x]]++;
