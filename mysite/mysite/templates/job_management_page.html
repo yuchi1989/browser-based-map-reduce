@@ -1,0 +1,156 @@
+<html>
+<head>
+{% load staticfiles %}
+<meta charset="UTF-8">
+<script type="text/javascript" src="{% static "mapreduce/jquery-1.12.1.js" %}"></script>
+<script type="text/javascript" src="{% static "mapreduce/nicEdit.js" %}"></script>
+<script>
+var area1, area2;
+
+function addArea1() {
+    area1 = new nicEditor({fullPanel : true}).panelInstance('myArea1');
+}
+function removeArea1() {
+    area1.removeInstance('myArea1');
+}
+
+function addArea2() {
+    area1 = new nicEditor({fullPanel : true}).panelInstance('myArea2');
+}
+function removeArea2() {
+    area1.removeInstance('myArea2');
+}
+bkLib.onDomLoaded(function() { 
+  addArea1();addArea2();
+  initial_map = "<div>function __map_function(input)</div> <div>{</div> <div>&nbsp;&nbsp;</div> <div>}</div>";
+  nicEditors.findEditor('myArea1').setContent(initial_map);
+  initial_reduce = "<div>def __reduce_function(final_result, task_output):</div><div>&nbsp;&nbsp;&nbsp;&nbsp;</div>";
+  nicEditors.findEditor('myArea2').setContent(initial_reduce);
+  $('#input').val("inputfolder0/");
+  $('#nodes').val("0");
+   });
+
+$(document).ready(function(){
+  
+  $("#b01").click(function(){
+  var nicInstance = nicEditors.findEditor('myArea1');
+  var data1 = $('#editor').find('.nicEdit-main').text();
+  var data2 = nicInstance.getContent();
+  var nicInstance2 = nicEditors.findEditor('myArea2');
+  var data3 = $('#editor2').find('.nicEdit-main').text();
+  var data4 = nicInstance2.getContent();
+  htmlobj = data2;
+  $("#myMap").html(data2);
+  $("#myReduce").html(data4);
+  var input_folder = $('#input').val();
+  var number_of_nodes = $('#nodes').val();
+  var aj = $.ajax( {  
+    url:'addtask',//
+    data:{  
+            jobid : 0,
+            action : 1,
+            input : input_folder,
+            nodes : number_of_nodes,
+            mapcode : data1,
+            reducecode: data3
+    },  
+    type:'post',  
+    cache:false,  
+    dataType:'json',  
+    success:function(data) {  
+        if(data.msg =="true" ){  
+            
+            console.log(data) 
+        }else{  
+            //view(data.msg);
+            console.log(data)
+        }  
+     },  
+     error : function() {  
+            
+          alert("error1");  
+     }
+     
+});
+  });
+});
+</script>
+<style type="text/css">
+.div-inline{ display:inline} 
+.divleft {float:left;}
+</style>
+</head>
+
+<body>
+ <div>
+    <div id = "editor" class = "divleft">
+    <textarea style="width: 600px; height: 300px;" id="myArea1"></textarea>
+    </div>
+    <div id = "editor2" class = "divleft">
+    <textarea style="width: 600px; height: 300px;" id="myArea2"></textarea>
+    </div>
+  </div>
+  <div style = "clear:both;">
+    <br />
+    Input folder (set it to empty, if you do not need to configure this option)
+    <br />
+    <div id = "myInput">
+    <input type="text" id="input">
+    </div>
+    <br />
+
+    <br />
+    Number of nodes (set it to zero, if you do not need to configure this option)
+    <br />
+    <div id = "myInput1">
+    <input type="text" id="nodes">
+    </div>
+    <br />
+    <!-- <button onClick="addArea2();">Add Editor to TEXTAREA</button> <button onClick="removeArea2();">Remove Editor from TEXTAREA</button> -->
+    <button id="b01" type="button">Addjob</button>
+</div>
+
+<!-- 
+  <script type="text/javascript">
+
+$(document).ready(function(){
+	function run(data){
+	
+	$("#myDiv").html("<h3>map function</h3>"+data.code.replace(/\n/g, "<br />"));
+	eval(data.code)
+}
+  var aj = $.ajax( {  
+    url:'mapreduce/gettask',// 跳转到 action  
+    data:{  
+             action : 0,  
+             test : 1
+    },  
+    type:'post',  
+    cache:false,  
+    dataType:'json',  
+    success:function(data) {  
+        if(data.msg =="true" ){  
+            
+            console.log(data) 
+            run(data)
+        }else{  
+            //view(data.msg);
+            console.log(data)
+            run(data)
+        }  
+     },  
+     error : function() {  
+            
+          alert("error");  
+     }
+     
+});
+});
+</script> -->
+<div id="myMap"><h2></h2></div>
+<div id="myReduce"><h2></h2></div>
+<div id="display"></div>
+<div id="result"></div>
+
+<!-- <p>this is a template</p> -->
+</body>

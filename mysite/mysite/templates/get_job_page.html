@@ -1,0 +1,116 @@
+<html>
+<head>
+{% load staticfiles %}
+<script type="text/javascript" src="{% static "mapreduce/jquery-1.12.1.js" %}"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#b01").click(function(){
+  htmlobj=$.ajax({url:"mapreduce/gettask",async:false});
+  $("#myDiv").html(htmlobj.responseText);
+  });
+});
+</script>
+
+</head>
+<body>
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+var globaldata;
+function postback(result,task_id){
+     var aj = $.ajax( {  
+    url:'mapreduce/postreturn',
+    data:{   
+             jobid: 0,
+             action : 2,  
+             test : 1,
+             taskid : task_id,
+             result : result
+    },  
+    type:'post',  
+    cache:false,  
+    dataType:'json',  
+    success:function(data) {  
+        if(data.msg =="true" ){  
+            
+            console.log(data)
+        }else{  
+            //view(data.msg);
+            console.log(data)
+        }  
+     },  
+     error : function() {  
+            
+          alert("error");  
+     }
+     
+});
+  }
+
+  function asyncreturn (result)
+  {    
+      if (jQuery.isEmptyObject(result)) {$("#result").html("Synchronizing");return;}
+      result = JSON.stringify(result)
+      $("#result").html(result);
+      postback(result,globaldata.taskid)
+      gettask()
+  }
+
+	function run(data){
+  text = data.code.replace(new RegExp("<","g"),"&lt;").replace(new RegExp(">","g"),"&gt;")
+	$("#myDiv").html("<h3>map function</h3>"+text);
+  if (data.taskid==-1){
+      $("#display").html("no job available");
+      return;
+  }
+  //alert(data.code)
+	eval(data.code);
+  result = __map_function(data.input);
+  if (jQuery.isEmptyObject(result)) {$("#result").html("Synchronizing");return;}
+  result = JSON.stringify(result)
+  $("#result").html(result);
+  postback(result,data.taskid)
+  gettask()
+}
+  
+  function gettask(){
+  var aj = $.ajax( {  
+    url:'mapreduce/gettask',
+    data:{   
+             jobid: 0,
+             action : 0,  
+             test : 1
+    },  
+    type:'post',  
+    cache:false,  
+    dataType:'json',  
+    success:function(data) {  
+            
+            console.log(data);
+            globaldata = data;
+            run(data);
+     },  
+     error : function() {  
+            
+          alert("error");  
+     }
+     
+});
+}
+gettask()
+});
+</script>
+<div id="myDiv"><h3>test ajax</h3></div>
+<div id="a1"><h3>Display</h3></div>
+
+<div id="display"></div>
+
+<div id="a1"><h3>Result</h3></div>
+
+<div id="result"></div>
+<div id="console"></div>
+<!-- <button id="b01" type="button">test ajax</button> -->
+<!-- <p>this is a template</p> -->
+</body>
+</html>
