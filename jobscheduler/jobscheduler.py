@@ -47,7 +47,7 @@ class JobServer(threading.Thread, JsonSocket):
 					tq1 = list(range(len(files)))
 					tq2 = []
 					tq3 = []
-					print (msg["mapcode"])
+					#print (msg["mapcode"])
 					self.lock.acquire()
 					jobqueue[int(msg["jobid"])]["job"]["id"] = int(msg["jobid"])
 					jobqueue[int(msg["jobid"])]["job"]["mapcode"] = msg["mapcode"]
@@ -128,20 +128,25 @@ class JobServer(threading.Thread, JsonSocket):
 						reduce = jobqueue[int(msg["jobid"])]["job"]["reducecode"]
 						final_result = jobqueue[int(msg["jobid"])]["job"]["finalresult"]
 						print (" ")
-						print (reduce)
-						print (taskid)
-						print (tq1)
-						print (tq2)
+						#print (reduce)
+						#print (taskid)
+						#print (tq1)
+						#print (tq2)
 						print (tq3)
 						exec(reduce,globals())
 						final_result = __reduce_function(final_result, taskoutput)
-						print (final_result)
-						jobqueue[int(msg["jobid"])]["job"]["finalresult"] = final_result
+						#print (final_result)
+						if not final_result:
+							jobqueue[int(msg["jobid"])]["job"]["finalresult"] = final_result
 						if len(tq3)==len(files):
-							print ("The job has been finished.")
-							print (final_result)
-							start_time = jobqueue[int(msg["jobid"])]["job"]["starttime"]
+							print ("The job has been finished.")							
+							start_time = jobqueue[int(msg["jobid"])]["job"]["starttime"]							
 							print ("--- %s seconds ---" % (time.time() - start_time))
+							"""
+							print (len(final_result))
+							for key in final_result:
+								print (str(key)+": "+str(final_result[key]))
+							"""
 					self.lock.release()
 					
                                         
@@ -162,7 +167,7 @@ class JobServerHandler(JsonSocket):
 		self.servernum = 0
 		self.lock = threading.Lock()
 		job = json.loads('{"job":{"id":0,"mapcode":"","inputkey":0, "finalresult":{}}}')
-		for i in range(10):
+		for i in range(20):
 			jobqueue.append(job)
                 
 	
@@ -192,7 +197,7 @@ class JsonClient(JsonSocket):
 		super(JsonClient, self).__init__(address, port)
 		
 	def connect(self):
-		for i in range(10):
+		for i in range(20):
 			try:
 				self.socket.connect( (self.address, self.port) )
 			except socket.error as msg:

@@ -16,10 +16,13 @@ def gettask(request):
     param["action"] = 1
     param["jobid"] = int(jobid)
     param["mapcode"] = "abc"
+    
     b1 = jobscheduler.Get_Job_Client(0,param)
     b1.connect()
     result = b1.run()
-    print (result)
+    
+    #print (result)
+    
     if "result" in result:
         response_data['code'] = ""
         response_data['input'] = ""
@@ -28,6 +31,7 @@ def gettask(request):
         response_data['code'] = result["job"]["mapcode"]
         response_data['input'] = result["input"]
         response_data['taskid'] = result["taskid"]
+    
     print ("getjob")
     return HttpResponse(json.dumps(response_data), content_type="application/json")
 
@@ -36,9 +40,9 @@ def addtask(request):
     mapcode = request.POST.get("mapcode", "")
     reducecode = request.POST.get("reducecode", "")
     code1 = mapcode.encode('gbk','ignore').decode('gbk')
-    print (code1)
+    #print (code1)
     code2 = reducecode.encode('gbk','ignore').decode('gbk')
-    print (code2)
+    #print (code2)
     jobid = request.POST.get("jobid", "")
     print (jobid)
     inputfolder = request.POST.get("input", "")

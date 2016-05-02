@@ -75,17 +75,22 @@ $(document).ready(function(){
   });
 });
 </script>
-
+<style type="text/css">
+.div-inline{ display:inline} 
+.divleft {float:left;}
+</style>
 </head>
 
 <body>
  <div>
-    <div id = "editor">
+    <div id = "editor" class = "divleft">
     <textarea style="width: 600px; height: 300px;" id="myArea1"></textarea>
     </div>
-    <div id = "editor2">
+    <div id = "editor2" class = "divleft">
     <textarea style="width: 600px; height: 300px;" id="myArea2"></textarea>
     </div>
+  </div>
+  <div style = "clear:both;">
     <br />
     Input folder (set it to empty, if you do not need to configure this option)
     <br />
@@ -102,7 +107,7 @@ $(document).ready(function(){
     </div>
     <br />
     <!-- <button onClick="addArea2();">Add Editor to TEXTAREA</button> <button onClick="removeArea2();">Remove Editor from TEXTAREA</button> -->
-    <button id="b01" type="button">submit</button>
+    <button id="b01" type="button">Addjob</button>
 </div>
 
 <!-- 
