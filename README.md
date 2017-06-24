@@ -3,7 +3,7 @@
 ### Framework
 ![](docs/image.png)
 
-###Introduction
+### Introduction
 
 There are three major components which define our browser-based MapReduce framework: the browsers, the web server and the job scheduler. 
 
@@ -22,12 +22,15 @@ Because results from browsers cannot be absolutely trusted, we create three task
 The first task queue stores the taskids of all the tasks which have not been assigned to any browser. When a task is assigned to a browser, its taskid will be removed from the first queue and appended to the second queue. Finally, when a task is finished (meaning that a browser has posted back the result of that task), its taskid will be removed from the second queue and added to the third queue. Therefore, the second queue has the taskids of all the tasks which have been assigned but not finished, and the third queue has the taskids of all the tasks which have finished.
 
 If a browser sends request to get a task but does not execute or return the result, this task remains in the second queue and will eventually be assigned to another browser.
+
 ##### Asynchronous Return in Map Function
 
 When integrating WebGL acceleration into map functions, an asynchronous return function should be called instead of a common return statement. When the map function returns in a WebGL-accelerated program, the GPU may still be performing computations. In order to make WebGL programs return correct results, the WebGL program should call an asynchronous return function explicitly as soon as the GPU completes its computation.
-#####Reduce Function Executed in Server
+
+##### Reduce Function Executed in Server
 
 We decided to execute the reduce function on the server instead of browsers for three reasons. First, letting the reduce function be executed in browsers would result in more complicated system design and imply the need for additional task synchronization. Second, letting the reduce function be executed in browsers will lead to larger overhead caused by additional network transmission of reduce results and/or frequent task synchronization. Finally, letting the reduce function be executed server-side enables the map function and reduce function to be executed simultaneously; otherwise, the reduce procedure has to be executed after all mappers complete.
+
 ##### JSON-based Communication
 
 AJAX and JavaScript Object Notation (JSON) are used for communication between browsers and the web server.  JSON over TCP is used for communication between the web server and the job scheduler.
